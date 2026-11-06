@@ -1,7 +1,7 @@
 //! The update channel of a Mac app: `stable` by default, `beta` when the person (or the product's admin) chooses it.
 //!
 //! The channel is data: the product gives the feed address as a template with `{channel}` (for instance
-//! `https://github.com/krizaka/yomizaka/releases/download/desktop-{channel}/latest.json`), the kit fills it. The feed is
+//! `https://github.com/krizaka/verikora/releases/download/desktop-{channel}/latest.json`), the kit fills it. The feed is
 //! always HTTPS, and the updater checks every download against the product's own public key (Tauri's updater), so a feed
 //! address alone can never install anything.
 
@@ -68,7 +68,7 @@ mod tests {
     use super::*;
 
     const FEED: &str =
-        "https://github.com/krizaka/yomizaka/releases/download/desktop-{channel}/latest.json";
+        "https://github.com/krizaka/verikora/releases/download/desktop-{channel}/latest.json";
 
     #[test]
     fn stable_is_the_default_and_a_channel_reads_back_from_its_name() {
@@ -86,7 +86,7 @@ mod tests {
     fn the_feed_names_the_channel() {
         assert_eq!(
             feed_url(FEED, Channel::Beta).unwrap().as_str(),
-            "https://github.com/krizaka/yomizaka/releases/download/desktop-beta/latest.json"
+            "https://github.com/krizaka/verikora/releases/download/desktop-beta/latest.json"
         );
         assert!(feed_url(FEED, Channel::Stable)
             .unwrap()

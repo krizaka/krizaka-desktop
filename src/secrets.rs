@@ -18,7 +18,7 @@ pub trait SecretStore: Send + Sync {
     fn remove(&self, key: &str) -> Result<(), String>;
 }
 
-/// A key is lowercase letters, digits, `.`, `-`, `_`, at most 64 characters (`yomizaka.session`).
+/// A key is lowercase letters, digits, `.`, `-`, `_`, at most 64 characters (`verikora.session`).
 pub fn check_key(key: &str) -> Result<(), String> {
     let ok = !key.is_empty()
         && key.len() <= 64
@@ -93,19 +93,19 @@ mod tests {
     #[test]
     fn a_session_is_stored_read_and_removed_twice_without_error() {
         let secrets = Checked(MemorySecrets::default());
-        assert_eq!(secrets.get("yomizaka.session").unwrap(), None);
-        secrets.set("yomizaka.session", TOKEN).unwrap();
+        assert_eq!(secrets.get("verikora.session").unwrap(), None);
+        secrets.set("verikora.session", TOKEN).unwrap();
         assert_eq!(
-            secrets.get("yomizaka.session").unwrap().as_deref(),
+            secrets.get("verikora.session").unwrap().as_deref(),
             Some(TOKEN)
         );
         secrets
-            .set("yomizaka.discovery.0", "{\"v\": 1, \"services\": []}")
+            .set("verikora.discovery.0", "{\"v\": 1, \"services\": []}")
             .unwrap();
-        secrets.remove("yomizaka.session").unwrap();
-        secrets.remove("yomizaka.session").unwrap();
-        assert_eq!(secrets.get("yomizaka.session").unwrap(), None);
-        assert!(secrets.get("yomizaka.discovery.0").unwrap().is_some());
+        secrets.remove("verikora.session").unwrap();
+        secrets.remove("verikora.session").unwrap();
+        assert_eq!(secrets.get("verikora.session").unwrap(), None);
+        assert!(secrets.get("verikora.discovery.0").unwrap().is_some());
     }
 
     #[test]

@@ -1,12 +1,12 @@
-//! The Tauri side of `krizaka-tauri-kit`: one plugin a Krizaka Mac app adds, so its own `lib.rs` only holds what is the
+//! The Tauri side of `krizaka-desktop`: one plugin a Krizaka Mac app adds, so its own `lib.rs` only holds what is the
 //! product's (its commands, each resolving its paths through [`Kit::resolve`]).
 //!
 //! ```ignore
 //! tauri::Builder::default()
 //!     .plugin(tauri_plugin_krizaka::dialog::init())
 //!     .plugin(
-//!         tauri_plugin_krizaka::Builder::new("yomizaka")
-//!             .link_hosts(["www.yomizaka.com", "dev.yomizaka.com"])
+//!         tauri_plugin_krizaka::Builder::new("verikora")
+//!             .link_hosts(["www.verikora.com", "dev.verikora.com"])
 //!             .link_prefixes(["/app", "/verify"])
 //!             .build(),
 //!     )
@@ -16,9 +16,9 @@
 //!
 //! What it brings, and what the page reaches through `@krizaka/app-desktop` (capability `krizaka:default`):
 //! - folders the person grants with the native picker, listed, revoked, watched; files dropped on the window
-//!   (event [`DROPPED`]); every path through the kit's one gate ([`krizaka_tauri_kit::access::Access`]);
+//!   (event [`DROPPED`]); every path through the kit's one gate ([`krizaka_desktop::access::Access`]);
 //! - small secrets in the macOS Keychain (the session token), the `KeyValueStorage` of `@krizaka/app-client`;
-//! - the native menu bar the page describes in its own words ([`krizaka_tauri_kit::menu::MenuSpec`]), clicks sent back
+//! - the native menu bar the page describes in its own words ([`krizaka_desktop::menu::MenuSpec`]), clicks sent back
 //!   as [`MENU`];
 //! - deep links (`<scheme>://…` and the product's web links) turned into a route ([`OPEN`], and [`take_links`] for the
 //!   ones that arrived before the page listened);
@@ -29,17 +29,17 @@ mod commands;
 mod menu;
 mod watch;
 
-pub use krizaka_tauri_kit as kit;
+pub use krizaka_desktop as kit;
 /// The folder picker the kit's commands open. The app registers it next to the kit —
 /// `.plugin(tauri_plugin_krizaka::dialog::init())` — and needs no dependency of its own: a plugin registered from inside
 /// another plugin's setup deadlocks Tauri's plugin store (found running the first app).
 pub use tauri_plugin_dialog as dialog;
 
-use krizaka_tauri_kit::access::Access;
-use krizaka_tauri_kit::deep_link::{self, LinkRules};
-use krizaka_tauri_kit::nav_guard::{self, Navigation};
-use krizaka_tauri_kit::scope::ScopeStore;
-use krizaka_tauri_kit::secrets::{Checked, SecretStore};
+use krizaka_desktop::access::Access;
+use krizaka_desktop::deep_link::{self, LinkRules};
+use krizaka_desktop::nav_guard::{self, Navigation};
+use krizaka_desktop::scope::ScopeStore;
+use krizaka_desktop::secrets::{Checked, SecretStore};
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
@@ -118,7 +118,7 @@ pub struct Builder {
 }
 
 impl Builder {
-    /// `scheme` is the product's deep-link scheme, lowercase (`yomizaka`), the one its Info.plist declares.
+    /// `scheme` is the product's deep-link scheme, lowercase (`verikora`), the one its Info.plist declares.
     pub fn new(scheme: &str) -> Self {
         Builder {
             scheme: scheme.to_ascii_lowercase(),
@@ -130,7 +130,7 @@ impl Builder {
         }
     }
 
-    /// The product's web hosts whose links open the app (`www.yomizaka.com`).
+    /// The product's web hosts whose links open the app (`www.verikora.com`).
     pub fn link_hosts<I: IntoIterator<Item = S>, S: Into<String>>(mut self, hosts: I) -> Self {
         self.hosts = hosts.into_iter().map(Into::into).collect();
         self
@@ -145,7 +145,7 @@ impl Builder {
         self
     }
 
-    /// A hosted web app a window of this app may show (`https://www.akinaza.com`): HTTPS, reduced to its origin.
+    /// A hosted web app a window of this app may show (`https://www.folioviv.com`): HTTPS, reduced to its origin.
     pub fn hosted_origin(mut self, origin: &str) -> Self {
         self.hosted.push(origin.to_string());
         self
@@ -158,7 +158,7 @@ impl Builder {
         self
     }
 
-    /// The update feed, with `{channel}` (see [`krizaka_tauri_kit::update::feed_url`]).
+    /// The update feed, with `{channel}` (see [`krizaka_desktop::update::feed_url`]).
     pub fn update_feed(mut self, template: &str) -> Self {
         self.update_feed = Some(template.to_string());
         self
@@ -191,7 +191,7 @@ impl Builder {
             ])
             .setup(move |app, _api| {
                 if let Some(template) = &update_feed {
-                    krizaka_tauri_kit::update::feed_url(template, Default::default())?;
+                    krizaka_desktop::update::feed_url(template, Default::default())?;
                 }
                 let hosted = hosted
                     .iter()
@@ -201,7 +201,7 @@ impl Builder {
                 let scope = ScopeStore::load(&data_dir.join(SCOPE_FILE));
                 app.manage(Kit {
                     access: Mutex::new(Access::new(scope)),
-                    secrets: Box::new(Checked(krizaka_tauri_kit::keychain::Keychain::new(
+                    secrets: Box::new(Checked(krizaka_desktop::keychain::Keychain::new(
                         &app.config().identifier,
                     ))),
                     links: LinkRules {
@@ -338,7 +338,7 @@ fn opened<'a, R: Runtime>(app: &AppHandle<R>, urls: impl Iterator<Item = &'a str
 /// Sets the menu bar from Rust, for an app whose page cannot send it (a hosted app): the same checks as the command.
 pub fn set_menu<R: Runtime>(
     app: &AppHandle<R>,
-    spec: &krizaka_tauri_kit::menu::MenuSpec,
+    spec: &krizaka_desktop::menu::MenuSpec,
 ) -> Result<(), String> {
     commands::apply_menu(app, &app.kit(), spec)
 }

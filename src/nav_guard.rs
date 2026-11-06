@@ -80,7 +80,7 @@ mod tests {
     fn places() -> Vec<String> {
         vec![
             "tauri://localhost".into(),
-            "https://www.yomizaka.com".into(),
+            "https://www.verikora.com".into(),
         ]
     }
 
@@ -92,7 +92,7 @@ mod tests {
     fn the_window_stays_on_its_own_places() {
         for own in [
             "tauri://localhost/index.html",
-            "https://www.yomizaka.com/app/rapports",
+            "https://www.verikora.com/app/rapports",
             "about:blank",
             "blob:tauri://localhost/5f1c-77",
         ] {
@@ -113,7 +113,7 @@ mod tests {
             "file:///etc/passwd",
             "javascript:alert(1)",
             "data:text/html,<script>1</script>",
-            "orazaka://app",
+            "sovkora://app",
             "tauri://evil",
             "blob:https://evil.example/1",
             "https://user:pw@evil.example/",
@@ -125,11 +125,11 @@ mod tests {
             );
         }
         assert_eq!(
-            decide(&places(), &at("https://www.yomizaka.com.evil.example/")),
+            decide(&places(), &at("https://www.verikora.com.evil.example/")),
             Navigation::Browser
         );
         assert_eq!(
-            decide(&places(), &at("https://www.yomizaka.com:8443/")),
+            decide(&places(), &at("https://www.verikora.com:8443/")),
             Navigation::Browser
         );
     }
@@ -137,8 +137,8 @@ mod tests {
     #[test]
     fn an_origin_is_https_or_loopback_and_reduced_to_its_origin() {
         assert_eq!(
-            normalize_origin("https://www.yomizaka.com/some/path?x=1").unwrap(),
-            "https://www.yomizaka.com"
+            normalize_origin("https://www.verikora.com/some/path?x=1").unwrap(),
+            "https://www.verikora.com"
         );
         assert_eq!(
             normalize_origin("http://localhost:3000/").unwrap(),
@@ -149,8 +149,8 @@ mod tests {
     #[test]
     fn refuses_plain_http_credentials_and_other_schemes() {
         for bad in [
-            "http://www.yomizaka.com",
-            "https://user:pw@www.yomizaka.com",
+            "http://www.verikora.com",
+            "https://user:pw@www.verikora.com",
             "file:///etc/passwd",
             "javascript:alert(1)",
             "nonsense",
@@ -161,10 +161,10 @@ mod tests {
 
     #[test]
     fn compares_origins_and_refuses_look_alikes() {
-        let allowed = "https://www.yomizaka.com";
+        let allowed = "https://www.verikora.com";
         assert!(same_origin(
             allowed,
-            &Url::parse("https://www.yomizaka.com/login").unwrap()
+            &Url::parse("https://www.verikora.com/login").unwrap()
         ));
         assert!(!same_origin(
             allowed,
@@ -172,11 +172,11 @@ mod tests {
         ));
         assert!(!same_origin(
             allowed,
-            &Url::parse("https://www.yomizaka.com.evil.example/").unwrap()
+            &Url::parse("https://www.verikora.com.evil.example/").unwrap()
         ));
         assert!(!same_origin(
             "not a url",
-            &Url::parse("https://www.yomizaka.com/").unwrap()
+            &Url::parse("https://www.verikora.com/").unwrap()
         ));
     }
 }

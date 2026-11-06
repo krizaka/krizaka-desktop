@@ -1,8 +1,8 @@
-//! Deep links: `yomizaka://app/bibliotheque/bail?tags=2026` or `https://www.yomizaka.com/app/bibliotheque/bail` opens the
+//! Deep links: `verikora://app/bibliotheque/bail?tags=2026` or `https://www.verikora.com/app/bibliotheque/bail` opens the
 //! same screen as the web (the URL is the state). A link becomes a **route inside the app** (`/app/bibliotheque/bail?tags=2026`)
 //! or is refused; it is never a place the window navigates to.
 //!
-//! The custom scheme reads like Expo Router's: `yomizaka://app/x` is the route `/app/x` (the "host" is the first segment).
+//! The custom scheme reads like Expo Router's: `verikora://app/x` is the route `/app/x` (the "host" is the first segment).
 //! A web link is accepted only on the product's own hosts. The route keeps its query, drops its fragment, and may only start
 //! with one of the product's prefixes when it gives some.
 
@@ -14,9 +14,9 @@ pub const MAX_LINK: usize = 2048;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LinkRules {
-    /// The product's scheme, lowercase (`yomizaka`).
+    /// The product's scheme, lowercase (`verikora`).
     pub scheme: String,
-    /// The product's web hosts whose links open the app (`www.yomizaka.com`, `dev.yomizaka.com`).
+    /// The product's web hosts whose links open the app (`www.verikora.com`, `dev.verikora.com`).
     pub hosts: Vec<String>,
     /// The routes a link may open (`/app`, `/verify`); empty means every route.
     pub prefixes: Vec<String>,
@@ -105,8 +105,8 @@ mod tests {
 
     fn rules() -> LinkRules {
         LinkRules {
-            scheme: "yomizaka".into(),
-            hosts: vec!["www.yomizaka.com".into(), "dev.yomizaka.com".into()],
+            scheme: "verikora".into(),
+            hosts: vec!["www.verikora.com".into(), "dev.verikora.com".into()],
             prefixes: vec!["/app".into(), "/verify".into()],
         }
     }
@@ -114,16 +114,16 @@ mod tests {
     #[test]
     fn the_scheme_reads_like_expo_router_and_keeps_the_query() {
         assert_eq!(
-            route(&rules(), "yomizaka://app/bibliotheque/bail?tags=2026").unwrap(),
+            route(&rules(), "verikora://app/bibliotheque/bail?tags=2026").unwrap(),
             "/app/bibliotheque/bail?tags=2026"
         );
         assert_eq!(
-            route(&rules(), "yomizaka:///app/rapports").unwrap(),
+            route(&rules(), "verikora:///app/rapports").unwrap(),
             "/app/rapports"
         );
-        assert_eq!(route(&rules(), "yomizaka://app/").unwrap(), "/app");
+        assert_eq!(route(&rules(), "verikora://app/").unwrap(), "/app");
         assert_eq!(
-            route(&rules(), "yomizaka://verify/abc#top").unwrap(),
+            route(&rules(), "verikora://verify/abc#top").unwrap(),
             "/verify/abc"
         );
     }
@@ -131,19 +131,19 @@ mod tests {
     #[test]
     fn a_web_link_opens_the_app_only_on_the_products_hosts() {
         assert_eq!(
-            route(&rules(), "https://www.yomizaka.com/app/verifications/42").unwrap(),
+            route(&rules(), "https://www.verikora.com/app/verifications/42").unwrap(),
             "/app/verifications/42"
         );
         assert_eq!(
-            route(&rules(), "https://DEV.yomizaka.com/app").unwrap(),
+            route(&rules(), "https://DEV.verikora.com/app").unwrap(),
             "/app"
         );
         for other in [
-            "https://www.yomizaka.com.evil.example/app",
+            "https://www.verikora.com.evil.example/app",
             "https://evil.example/app",
-            "http://www.yomizaka.com/app",
-            "https://www.yomizaka.com:8443/app",
-            "orazaka://app/x",
+            "http://www.verikora.com/app",
+            "https://www.verikora.com:8443/app",
+            "sovkora://app/x",
             "javascript:alert(1)",
             "file:///etc/passwd",
         ] {
@@ -154,10 +154,10 @@ mod tests {
     #[test]
     fn a_route_outside_the_prefixes_or_one_that_could_leave_the_app_is_refused() {
         for bad in [
-            "yomizaka://admin/users",
-            "yomizaka://application",
-            "https://www.yomizaka.com/",
-            "yomizaka:////evil.example/app",
+            "verikora://admin/users",
+            "verikora://application",
+            "https://www.verikora.com/",
+            "verikora:////evil.example/app",
         ] {
             assert!(
                 matches!(route(&rules(), bad), Err(LinkError::Refused(_))),
@@ -166,17 +166,17 @@ mod tests {
         }
         // Dot segments are resolved under the link's first segment: they can never climb out of it.
         assert_eq!(
-            route(&rules(), "yomizaka://app/a/../../admin").unwrap(),
+            route(&rules(), "verikora://app/a/../../admin").unwrap(),
             "/app/admin"
         );
         assert_eq!(
-            route(&rules(), "https://www.yomizaka.com/app/../admin"),
+            route(&rules(), "https://www.verikora.com/app/../admin"),
             Err(LinkError::Refused("/admin".into()))
         );
         for invalid in [
-            "yomizaka://app/a\\b",
-            "yomizaka://app/\u{0}",
-            "https://u:p@www.yomizaka.com/app",
+            "verikora://app/a\\b",
+            "verikora://app/\u{0}",
+            "https://u:p@www.verikora.com/app",
             "not a link",
         ] {
             assert_eq!(
@@ -193,9 +193,9 @@ mod tests {
             prefixes: vec![],
             ..rules()
         };
-        assert_eq!(route(&open, "yomizaka://tarifs").unwrap(), "/tarifs");
-        assert_eq!(route(&open, "yomizaka://").unwrap(), "/");
-        let long = format!("yomizaka://app/{}", "a".repeat(MAX_LINK));
+        assert_eq!(route(&open, "verikora://tarifs").unwrap(), "/tarifs");
+        assert_eq!(route(&open, "verikora://").unwrap(), "/");
+        let long = format!("verikora://app/{}", "a".repeat(MAX_LINK));
         assert_eq!(route(&rules(), &long), Err(LinkError::TooLong));
     }
 }
