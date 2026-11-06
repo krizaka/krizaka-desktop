@@ -1,6 +1,6 @@
-# krizaka-tauri-kit — agent contract
+# krizaka-desktop — agent contract
 
-> Governance of **`krizaka/krizaka-tauri-kit`**. Decision: [krizaka/.github ADR-005](https://github.com/krizaka/.github/blob/main/docs/adr/ADR-005-tauri-app-kit.md).
+> Governance of **`krizaka/krizaka-desktop`**. Decision: [krizaka/.github ADR-005](https://github.com/krizaka/.github/blob/main/docs/adr/ADR-005-tauri-app-kit.md).
 
 ## What belongs here
 
@@ -9,7 +9,7 @@
   `tauri` dependency, tested on any machine. The **glue** that applies them (commands, events, the Keychain, the native
   menu, `RunEvent::Opened`) is `plugin/` (`tauri-plugin-krizaka`); it decides nothing the root crate does not check.
 - Not here: a product's commands, its sidecar, its messages, its brand. Those are the product's, wired from
-  `template/` (ex `template-tauri-app`). The page side of the plugin is `@krizaka/app-desktop` (krizaka-ui): its `COMMANDS` list and
+  `template/` (ex `template-tauri-app`, now the `krizaka-template-desktop` repository). The page side of the plugin is `@krizaka/app-desktop` (krizaka-ui): its `COMMANDS` list and
   `plugin/build.rs` change together.
 
 ## Rules

@@ -2084,8 +2084,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "krizaka-tauri-kit"
-version = "0.3.0"
+name = "krizaka-desktop"
+version = "0.4.0"
 dependencies = [
  "base64 0.23.1",
  "keyring",
@@ -3896,9 +3896,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-krizaka"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
- "krizaka-tauri-kit",
+ "krizaka-desktop",
  "notify",
  "serde",
  "serde_json",

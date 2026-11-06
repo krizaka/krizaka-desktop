@@ -210,11 +210,11 @@ mod tests {
     fn labels() -> StandardLabels {
         let w = |s: &str| s.to_string();
         StandardLabels {
-            about: w("À propos de Yomizaka"),
-            hide: w("Masquer Yomizaka"),
+            about: w("À propos de Verikora"),
+            hide: w("Masquer Verikora"),
             hide_others: w("Masquer les autres"),
             show_all: w("Tout afficher"),
-            quit: w("Quitter Yomizaka"),
+            quit: w("Quitter Verikora"),
             edit: w("Édition"),
             undo: w("Annuler"),
             redo: w("Rétablir"),
