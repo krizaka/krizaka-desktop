@@ -33,5 +33,6 @@ test("the stylesheet imports a brand the tokens package exports, never a placeho
   const css = readFileSync(new URL("../src/styles.css", import.meta.url), "utf8");
   const brands = [...css.matchAll(/@krizaka\/tokens\/brands\/([\w-]+)\.css/g)].map((m) => m[1]);
   assert.ok(brands.length > 0);
-  for (const brand of brands) assert.ok(["krizaka", "scoped", "folioviv", "sovkora", "verikora"].includes(brand), brand);
+  for (const brand of brands)
+    assert.ok(["krizaka", "scoped", "folioviv", "sovkora", "verikora"].includes(brand), brand);
 });
